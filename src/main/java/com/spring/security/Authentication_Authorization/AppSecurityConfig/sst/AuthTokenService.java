@@ -1,5 +1,8 @@
 package com.spring.security.Authentication_Authorization.AppSecurityConfig.sst;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.spring.security.Authentication_Authorization.users.UserEntity;
@@ -29,7 +32,19 @@ public class AuthTokenService {
 	
 	public UserEntity getUserFromToken(String token)
 	{
-		var authToken = authtokenrepo.findById(token).orElseThrow();
+		AuthTokenEntity authToken = authtokenrepo.findAuthEntityByToken(UUID.fromString(token));
+		if(authToken == null)
+			return null;
 		return authToken.getUser();
+	}
+	
+	public boolean isTokenValid(String token)
+	{
+		var authToken = authtokenrepo.findById(token).orElseThrow();
+		if(LocalDate.now().isBefore(authToken.getCreatedAt()))
+			return false;
+		
+		return true;
+
 	}
 }

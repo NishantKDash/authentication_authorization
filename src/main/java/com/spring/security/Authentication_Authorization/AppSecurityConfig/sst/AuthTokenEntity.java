@@ -1,5 +1,6 @@
 package com.spring.security.Authentication_Authorization.AppSecurityConfig.sst;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import com.spring.security.Authentication_Authorization.users.UserEntity;
@@ -28,4 +29,6 @@ public class AuthTokenEntity {
 	 
 	 @ManyToOne
 	 private UserEntity user;
+	 
+	 private LocalDate createdAt;
 }

@@ -3,7 +3,6 @@ package com.spring.security.Authentication_Authorization.users;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.security.Authentication_Authorization.AppSecurityConfig.jwt.JwtService;
+import com.spring.security.Authentication_Authorization.AppSecurityConfig.sst.AuthTokenService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("")
@@ -23,6 +26,9 @@ public class UserController {
 	private ModelMapper mapper;
 	@Autowired
 	private JwtService jwtService;
+	
+	@Autowired
+	private AuthTokenService authService;
 	
 	
 	@PostMapping("/register")
@@ -60,6 +66,17 @@ public class UserController {
 		UserResponseDto responsedto = new UserResponseDto();
 		mapper.map(user ,  responsedto);
 		responsedto.setToken(jwtService.createJwt(responsedto.getName()));
+		return ResponseEntity.ok(responsedto);
+	}
+	
+	@PostMapping("/login_session_cookies")
+	public ResponseEntity<UserResponseDto_v2> verifyUser(@RequestBody LoginUserDto logindto , HttpServletResponse response) throws Exception
+	{
+		UserEntity user = userserv.verifyUser(logindto);
+		UserResponseDto_v2 responsedto = new UserResponseDto_v2();
+		mapper.map(user ,  responsedto);
+		Cookie cookie = new Cookie("auth" , authService.createToken(user).toString());
+		response.addCookie(cookie);
 		return ResponseEntity.ok(responsedto);
 	}
 

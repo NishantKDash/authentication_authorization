@@ -15,6 +15,7 @@ import com.spring.security.Authentication_Authorization.users.UserController;
 
 @SpringBootApplication
 @Configuration
+@ComponentScan(basePackages ="com.spring.security.Authentication_Authorization")
 public class AuthenticationAuthorizationApplication {
 
 	public static void main(String[] args) throws Exception {
